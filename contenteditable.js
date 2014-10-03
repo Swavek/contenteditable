@@ -7,16 +7,25 @@ if(Meteor.isServer) {
 }
 
 if (Meteor.isClient) {
+
   Template.contenteditable.content = function () {
 	return Content.findOne();
   };
 
-  Template.contenteditable.events({
-    'blur .cr-note p': function () {
-	var note_html = $('.cr-note p').html();
-	Content.update({_id: Content.findOne()._id}, {$set: {note: note_html}});
-    }
-  });
+  Template.contenteditable.events( {
+    
+	'focus div.cr-note': function( evt) {
+		evt.stopPropagation();
+		Editor.Edit( this, evt.target);
+	},
+	
+    'blur div.cr-note':  function( evt) {
+		evt.stopPropagation();	
+		Editor.Save( this, evt.target);
+	}
+	 
+  } );
+
 }
 
 if (Meteor.isServer) {
