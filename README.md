@@ -3,7 +3,7 @@
 
 I created a simple solution that caches the target element nodes when the element gets focus. After element loses focus the list of cached nodes is used to remove the nodes that were added while the content was edited.
 
-The solution is contained in **'editor.js'** file. There are 2 methods that you can use in your code: 
+The solution is contained in **'lib/editor.js'** file. There are 2 methods that you can use in your code: 
 * Edit - can be called from 'focus' event handler, caches initial list of nodes, sets contentEditable=true
 * Save - should be called from 'blur' event handler, sets contentEditable='inherited', updates content collection document and removes (prunes) the nodes that were added.
  
