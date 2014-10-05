@@ -12,16 +12,19 @@ if (Meteor.isClient) {
 	return Content.findOne();
   };
 
+  Template.contenteditable.editable = function () {
+  	return '<div class="cr-note" contenteditable="true" tabindex=0>' + this.note + '</div>';
+  };
+
   Template.contenteditable.events( {
-    
-	'focus div.cr-note': function( evt) {
-		evt.stopPropagation();
-		Editor.Edit( this, evt.target);
-	},
-	
+    	
     'blur div.cr-note':  function( evt) {
-		evt.stopPropagation();	
-		Editor.Save( this, evt.target);
+		var content = $( evt.target).html();		
+		Content.update( this._id, 
+			{ 
+				$set: { note: content} 
+			} 
+		);
 	}
 	 
   } );
