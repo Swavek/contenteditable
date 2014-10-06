@@ -2,17 +2,19 @@
 
 ####ContentEditable Weirdness with Blaze.
 
-Many developers experienced problems working with editable DOM elements (i.e. where contentEditable=="true"). The main issue is repeated text fragments in multiline content. The problem is illustrated by @serviewcare [here](https://github.com/serviewcare/contenteditable).
+Many developers experienced problems working with editable DOM elements (i.e. where contentEditable=="true"). The main issue is repeated text fragments in multiline content. The problem is described in [issue 1964](https://github.com/meteor/meteor/issues/1964) and illustrated by @serviewcare [here](https://github.com/serviewcare/contenteditable).
 
-Various attempts to fix the issue, including deleting added nodes appeared to be only temporary workarounds due to changes in Blaze API and behaviour. [The solution](https://github.com/eluck/contenteditable) by @eluc focused on the link between editable content nodes and $blaze_range object. I analyzed the data structure created by Blaze and here are my findings:
-* content of editable element is a collection of nodes
-* when the content is rendered by Blaze each node is added to DOMrange.members collection
-* $blaze_range reference is added to node
-* no such link is created when content is added by users 
-* it is possible to add the link using $blaze_range.addMember method. 
-* We could use this to solve the problem, but I couldn't find correct blaze_range reference when content consists of a single line of text. **Please, let me know if you know how to get this reference.**  
+Various attempts to fix the issue, including deleting added nodes appeared to be only temporary workarounds due to changes in Blaze API and behaviour. [The solution](https://github.com/eluck/contenteditable) by @eluc focused on the link between editable content nodes and `Blaze.DOMRange` object. Here are the findings of the data structure and behaviour of editable content element:
+* content of editable element is a collection of any variaty of nodes (e.g. Chrome and Firefox DOM structures are different) 
+* when the content is rendered by Blaze each node is added to `DOMRange.members` collection (`$blaze_range` reference is added to nodes, except text nodes) 
+* any content added by users is not in members collection (and has no `$blaze_range` reference)
+* it is possible to add or remove the link using `DOMRange.addMember` and `DOMRange.removeMember` methods
+* `DOMRange.setMembers` is also available to replace entire members collection in one go
+* reference to _DOMRange representing the content can be get in helper or event handler with `Blaze.currentView._domrange`.
 
-I changed the template structure and its helpers so that I can always get the $blaze_range, but it appeared that much simpler than manipulating the DOMrange collection is *isolating editable content from Blaze generated DOM elements*:
+DOMRange methods can be used to solve the original problem, integrate external packages or develop a custom collaborative editor. 
+
+There is much simpler way to assure the content is saved and updated reactively correctly. **We can isolate editable content from Blaze generated DOM elements using this method**:
 
 1. simplify the template so the entire editable element with its content is provided by single helper.
 ```
