@@ -9,14 +9,14 @@ Various attempts to fix the issue, including deleting added nodes appeared to be
 #### DOMRange and editable content 
 
 Here are the findings of the data structure and behaviour of editable content element:
-* content of editable element is a collection of any variaty of nodes (e.g. Chrome and Firefox DOM structures are different) 
+* content of editable element is a collection of any variety of nodes (e.g. Chrome and Firefox DOM structures are different) 
 * when the content is rendered by Blaze each node is added to `DOMRange.members` collection (`$blaze_range` reference is added to nodes, except text nodes) 
-* any content added by users is not in members collection (and has no `$blaze_range` reference)
+* any content added by users is not in `members` collection (and has no `$blaze_range` reference)
 * it is possible to add or remove the link using `DOMRange.addMember` and `DOMRange.removeMember` methods
-* `DOMRange.setMembers` is also available to replace entire members collection in one go
+* `DOMRange.setMembers` is also available to replace entire `members` collection in one go
 * reference to _DOMRange representing the content can be get in helper or event handler with `Blaze.currentView._domrange`.
 
-DOMRange methods can be used to solve the original problem, integrate external packages or develop a custom collaborative editor. 
+`DOMRange` methods can be used to solve the original problem, integrate external packages or develop a custom collaborative editor. 
 
 ####simple solution
 
