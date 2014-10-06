@@ -18,7 +18,7 @@ Here are the findings of the data structure and behaviour of editable content el
 
 DOMRange methods can be used to solve the original problem, integrate external packages or develop a custom collaborative editor. 
 
-##simple solution
+####simple solution
 
 There is much simpler way to assure the content is saved and updated reactively correctly. **We can isolate editable content from Blaze generated DOM elements using this method**:
 
